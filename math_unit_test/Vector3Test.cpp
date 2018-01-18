@@ -14,7 +14,7 @@ TEST_CASE("Vector3_ctor")
 	//move ctor
 	const Vector3f vect4 = []
 	{
-		return std::move(Vector3f{ 1,1,1 });
+		return std::move(Vector3f{ 1, 1, 1 });
 	}();
 
 	REQUIRE(vect4.x == 1);
@@ -45,7 +45,7 @@ TEST_CASE("Vector3_operator_plus")
 {
 	Vector3f a{ 1, 2, 3 };
 	const Vector3f b{ 3, 2, 1 };
-	const Vector3f expected{ 4,4,4 };
+	const Vector3f expected{ 4, 4, 4 };
 
 	REQUIRE(a + b == expected);
 	a += b;
@@ -62,4 +62,52 @@ TEST_CASE("Vector3_operator_multiply_scalar")
 	REQUIRE(scalar * vect == expected);
 	vect *= scalar;
 	REQUIRE(vect == expected);
+}
+
+TEST_CASE("Vector3_lenght")
+{
+	Vector3f vect{ 1,1,1 };
+	REQUIRE(vect.squaredLenght() == 3);
+	REQUIRE(vect.length() == std::sqrt(3.0f));
+
+	Vector3f nullvector{ 0,0,0 };
+	REQUIRE(nullvector.squaredLenght() == 0);
+	REQUIRE(nullvector.length() == 0);
+}
+
+TEST_CASE("Vector3_normalize")
+{
+	Vector3d vect{ 1,1,1 };
+	vect.normalize();
+	const auto length = vect.length();
+	const auto expected = 1.0;
+	REQUIRE(length == expected);
+}
+
+TEST_CASE("Vector3_dot_product")
+{
+	Vector3d a{ 1,0,0 };
+	Vector3d b{ 0,1,0 };
+
+	a.normalize();
+	b.normalize();
+
+	REQUIRE(a.dotProduct(b) == 0.0);
+	REQUIRE(a.dotProduct(a) == 1.0);
+}
+
+TEST_CASE("Vector3_cross_product")
+{
+	const Vector3d a{ 1, 0, 0 };
+	const Vector3d b{ 0, 1, 0 };
+
+	REQUIRE(a.crossProduct(b) == Vector3d{ 0, 0, 1 });
+}
+
+TEST_CASE("Vector3_reflect_normal")
+{
+	const Vector3d L{ 0.5, 0, 0.5 };
+	const Vector3d N{ 0, 1, 0 };
+
+	REQUIRE(L.reflected(N) == Vector3d{ -0.5, 0, -0.5 });
 }

@@ -11,11 +11,6 @@ void hang()
 
 int main()
 {
-	Vector3f a{ 1,2,3 };
-	Vector3f b{ 3,2,1 };
-
-	std::cout << (a + b) * 2 << '\n';
-
 	hang();
 	return 0;
 }
