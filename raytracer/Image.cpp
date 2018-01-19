@@ -1,7 +1,7 @@
 #include "Image.hpp"
 #include <cassert>
 
-Image::Image(int width, int height, int depth): bitmap(nullptr)
+Image::Image(int width, int height, int depth) : bitmap(nullptr)
 {
 	bitmap = FreeImage_Allocate(width, height, depth);
 
@@ -9,7 +9,7 @@ Image::Image(int width, int height, int depth): bitmap(nullptr)
 	std::cout << "Allocated a " << width << 'x' << height << 'x' << depth << " bitmap image\n";
 }
 
-Image::Image(const std::string& path, FREE_IMAGE_FORMAT fif, int flags): bitmap(nullptr)
+Image::Image(const std::string& path, FREE_IMAGE_FORMAT fif, int flags) : bitmap(nullptr)
 {
 	bitmap = FreeImage_Load(fif, path.c_str(), flags);
 
@@ -36,7 +36,7 @@ Image::~Image()
 	if (bitmap)
 	{
 		FreeImage_Unload(bitmap);
-		std::cout << "Unloaded image";
+		std::cout << "Unloaded image\n";
 	}
 }
 
@@ -76,6 +76,12 @@ size_t Image::height() const
 	return FreeImage_GetHeight(bitmap);
 }
 
+size_t Image::pitch() const
+{
+	assert(bitmap);
+	return FreeImage_GetPitch(bitmap);
+}
+
 RGBQUAD Image::pixelColor(size_t x, size_t y) const
 {
 	assert(bitmap);
@@ -102,7 +108,7 @@ BYTE* Image::bits()
 
 Image::ColorMask Image::colorMask() const
 {
-	return 
+	return
 	{
 		FreeImage_GetRedMask(bitmap),
 		FreeImage_GetGreenMask(bitmap),

@@ -22,7 +22,7 @@ public:
 	Image(const Image&) = delete;
 	///non copy-asignable
 	Image& operator=(const Image&) = delete;
-	
+
 	///Move constructor
 	Image(Image&& other) noexcept;
 	///Asignment-move operator
@@ -41,9 +41,11 @@ public:
 	size_t width() const;
 	///Return the height of the image in pixels
 	size_t height() const;
+	///Return the pitch/stride of the image
+	size_t pitch() const;
 	///Return the color at this position
 	RGBQUAD pixelColor(size_t x, size_t y) const;
-	///Set the color at this position 
+	///Set the color at this position
 	void setPixelColor(size_t x, size_t y, const RGBQUAD& value);
 	///get the array of bits that this image does
 	BYTE* bits();
