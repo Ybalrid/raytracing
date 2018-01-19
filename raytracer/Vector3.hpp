@@ -182,6 +182,11 @@ struct Vector3
 
 		return (normalizedNormal * vect.dotProduct(normalizedNormal) * T(2)) - vect;
 	}
+
+	bool isNull() const
+	{
+		return squaredLenght() == T(0);
+	}
 };
 
 ///Handle the scalar*vector operation

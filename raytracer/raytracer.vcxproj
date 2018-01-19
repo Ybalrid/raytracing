@@ -131,9 +131,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Image.hpp" />
+    <ClInclude Include="ImageExept.hpp" />
     <ClInclude Include="MathExcept.hpp" />
     <ClInclude Include="Vector3.hpp" />
   </ItemGroup>

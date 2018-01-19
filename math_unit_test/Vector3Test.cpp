@@ -77,7 +77,7 @@ TEST_CASE("Vector3_lenght")
 
 TEST_CASE("Vector3_normalize")
 {
-	Vector3d vect{ 1,1,1 };
+	Vector3d vect{ 1, 1, 1 };
 	vect.normalize();
 	const auto length = vect.length();
 	const auto expected = 1.0;
@@ -86,8 +86,8 @@ TEST_CASE("Vector3_normalize")
 
 TEST_CASE("Vector3_dot_product")
 {
-	Vector3d a{ 1,0,0 };
-	Vector3d b{ 0,1,0 };
+	Vector3d a{ 1, 0, 0 };
+	Vector3d b{ 0, 1, 0 };
 
 	a.normalize();
 	b.normalize();
@@ -107,7 +107,20 @@ TEST_CASE("Vector3_cross_product")
 TEST_CASE("Vector3_reflect_normal")
 {
 	const Vector3d L{ 0.5, 0, 0.5 };
-	const Vector3d N{ 0, 1, 0 };
+	const Vector3d N{ 0, 42, 0 }; //This normal vector is not normalized. The reflect function should still works
 
 	REQUIRE(L.reflected(N) == Vector3d{ -0.5, 0, -0.5 });
+}
+
+TEST_CASE("Vector3_null_vector")
+{
+	const Vector3f nullFloat{ 0, 0, 0 };
+	const Vector3d nullDouble{ 0, 0, 0 };
+	const Vector3f notNullFloat{ 12, 23, 34 };
+	const Vector3d notNullDouble{ 12, 23, 34 };
+
+	REQUIRE(nullFloat.isNull());
+	REQUIRE(nullDouble.isNull());
+	REQUIRE_FALSE(notNullFloat.isNull());
+	REQUIRE_FALSE(notNullDouble.isNull());
 }
