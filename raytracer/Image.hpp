@@ -7,6 +7,8 @@
 class Image
 {
 	FIBITMAP* bitmap;
+	static bool initialized;
+	static void initFreeImage();
 
 public:
 	struct ColorMask
@@ -51,4 +53,7 @@ public:
 	BYTE* bits();
 	///Get the 3 color masks
 	ColorMask colorMask() const;
+
+	///Return width/height of the image
+	float getRatio() const;
 };

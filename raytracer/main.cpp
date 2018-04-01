@@ -1,21 +1,12 @@
 #include <iostream>
-#include <FreeImage.h>
-#include "Vector3.hpp"
-#include "Image.hpp"
 
-void initFreeImage()
-{
-	std::cout << FreeImage_GetCopyrightMessage() << '\n';
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include "Scene.hpp"
+#include "Sphere.hpp"
 
-	//give a function to print the errors for free image
-	FreeImage_SetOutputMessage([](FREE_IMAGE_FORMAT fif, const char* message)
-	{
-		std::cout << "\n***";
-		if (fif != FIF_UNKNOWN) std::cout << FreeImage_GetFormatFromFIF(fif) << " Format\n";
-		std::cout << message;
-		std::cout << " ***\n";
-	});
-}
+#define M_TAU 2 * M_PI
+#define RIGHT_ANGLE M_TAU / 4
 
 void hang()
 {
@@ -26,7 +17,27 @@ void hang()
 
 int main()
 {
-	initFreeImage();
+	Scene s(1024, 768, float(RIGHT_ANGLE));
+
+	s.addObject<Sphere>(Vector3d(0, 0, 4), 1);
+	s.addObject<Sphere>(Vector3d(2, 0, 4), 0.25);
+	s.addObject<Sphere>(Vector3d(-1, 0, 6), 2);
+	auto lamp = std::make_unique<Lamp>();
+
+	lamp->position.y = 1;
+	lamp->position.z = 2;
+	lamp->position.x = -1;
+	lamp->value		 = 0.5;
+	s.addLamp(std::move(lamp));
+
+	lamp		= std::make_unique<Lamp>();
+	lamp->value = 0.5;
+
+	s.addLamp(std::move(lamp));
+
+	s.render();
+
+	s.writeRenderTo("output.png");
 
 	hang();
 	return 0;

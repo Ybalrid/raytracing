@@ -14,7 +14,8 @@ struct Vector3
 	{
 	}
 
-	Vector3(T _x, T _y, T _z) : x{ _x }, y{ _y }, z{ _z }
+	Vector3(T _x, T _y, T _z) :
+	 x{ _x }, y{ _y }, z{ _z }
 	{
 	}
 
@@ -25,22 +26,24 @@ struct Vector3
 		z = _array[2];
 	}
 
-	Vector3(const Vector3& other) : x{ other.x }, y{ other.y }, z{ other.z }
+	Vector3(const Vector3<T>& other) :
+	 x{ other.x }, y{ other.y }, z{ other.z }
 	{
 	}
 
-	Vector3(Vector3&& other) noexcept : x{ other.x }, y{ other.y }, z{ other.z }
+	Vector3(Vector3<T>&& other) noexcept :
+	 x{ other.x }, y{ other.y }, z{ other.z }
 	{
 	}
 
 	///Assign content of new vector to this one. Return a ref to itself as a result
-	T& operator=(const Vector3& other) noexcept
+	T& operator=(const Vector3<T>& other) noexcept
 	{
-		if (this != other)
+		if(*this != other)
 		{
-			x = other.x();
-			y = other.y();
-			z = other.z();
+			x = other.x;
+			y = other.y;
+			z = other.z;
 		}
 
 		return *this;
@@ -64,7 +67,7 @@ struct Vector3
 	}
 
 	///Add vector to this vector
-	Vector3& operator+=(const Vector3& vect) noexcept
+	Vector3& operator+=(const Vector3<T>& vect) noexcept
 	{
 		x += vect.x;
 		y += vect.y;
@@ -73,7 +76,7 @@ struct Vector3
 		return *this;
 	}
 
-	Vector3& operator-=(const Vector3& vect) noexcept
+	Vector3& operator-=(const Vector3<T>& vect) noexcept
 	{
 		x -= vect.x;
 		y -= vect.y;
@@ -82,27 +85,27 @@ struct Vector3
 		return *this;
 	}
 
-	Vector3 operator-(const Vector3& b) const noexcept
+	Vector3 operator-(const Vector3<T>& b) const noexcept
 	{
 		auto vect{ *this };
 		return vect -= b;
 	}
 
 	///Add vector to vector and return the result
-	Vector3 operator+(const Vector3& b) const noexcept
+	Vector3 operator+(const Vector3<T>& b) const noexcept
 	{
 		auto vect{ *this };
 		return vect += b;
 	}
 
 	///Return true if the two vectors are the same
-	bool operator==(const Vector3& vect) const noexcept
+	bool operator==(const Vector3<T>& vect) const noexcept
 	{
 		return x == vect.x && y == vect.y && z == vect.z;
 	}
 
 	///Return true if the two vectors are differents
-	bool operator!=(const Vector3& vect) const noexcept
+	bool operator!=(const Vector3<T>& vect) const noexcept
 	{
 		return !(*this == vect);
 	}
@@ -123,7 +126,7 @@ struct Vector3
 	void normalize()
 	{
 		const auto len = length();
-		if (len == 0) throw DivideByZeroExcept("Can't normalize a null vector");
+		if(len == 0) throw DivideByZeroExcept("Can't normalize a null vector");
 		x /= len;
 		y /= len;
 		z /= len;
@@ -140,11 +143,8 @@ struct Vector3
 	///dot product
 	T dotProduct(const Vector3<T>& v) const
 	{
-		return
-		{
-			(x * v.x) +
-			(y * v.y) +
-			(z * v.z)
+		return {
+			(x * v.x) + (y * v.y) + (z * v.z)
 		};
 	}
 
@@ -161,8 +161,7 @@ struct Vector3
 	///Cross product
 	Vector3 crossProduct(const Vector3<T>& v) const
 	{
-		return
-		{
+		return {
 			(y * v.z) - (z * v.y),
 			(z * v.x) - (x * v.z),
 			(x * v.y) - (y * v.x)
@@ -209,6 +208,6 @@ std::ostream& operator<<(std::ostream& out, const Vector3<T> vect)
 	return out;
 }
 
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+using Vector3f  = Vector3<float>;
+using Vector3d  = Vector3<double>;
 using Vector3ld = Vector3<long double>;

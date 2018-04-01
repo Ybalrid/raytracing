@@ -1,23 +1,45 @@
 #include "Image.hpp"
 #include <cassert>
 
-Image::Image(int width, int height, int depth) : bitmap(nullptr)
+bool Image::initialized = false;
+
+void Image::initFreeImage()
 {
+	std::cout << FreeImage_GetCopyrightMessage() << '\n';
+
+	//give a function to print the errors for free image
+	FreeImage_SetOutputMessage([](FREE_IMAGE_FORMAT fif, const char* message) {
+		std::cout << "\n***";
+		if(fif != FIF_UNKNOWN) std::cout << FreeImage_GetFormatFromFIF(fif) << " Format\n";
+		std::cout << message;
+		std::cout << " ***\n";
+	});
+
+	initialized = true;
+}
+
+Image::Image(int width, int height, int depth) :
+ bitmap(nullptr)
+{
+	if(!initialized) initFreeImage();
+
 	bitmap = FreeImage_Allocate(width, height, depth);
 
-	if (!bitmap) throw ImageCantAllocateExcept();
+	if(!bitmap) throw ImageCantAllocateExcept();
 	std::cout << "Allocated a " << width << 'x' << height << 'x' << depth << " bitmap image\n";
 }
 
-Image::Image(const std::string& path, FREE_IMAGE_FORMAT fif, int flags) : bitmap(nullptr)
+Image::Image(const std::string& path, FREE_IMAGE_FORMAT fif, int flags) :
+ bitmap(nullptr)
 {
 	bitmap = FreeImage_Load(fif, path.c_str(), flags);
 
-	if (!bitmap) throw ImageCantLoadExept(path);
+	if(!bitmap) throw ImageCantLoadExept(path);
 	std::cout << "Loaded " << path << " as " << FreeImage_GetFormatFromFIF(fif) << " format\n";
 }
 
-Image::Image(Image&& other) noexcept: bitmap(other.bitmap)
+Image::Image(Image&& other) noexcept :
+ bitmap(other.bitmap)
 {
 	other.bitmap = nullptr;
 }
@@ -33,7 +55,7 @@ Image& Image::operator=(Image&& other) noexcept
 
 Image::~Image()
 {
-	if (bitmap)
+	if(bitmap)
 	{
 		FreeImage_Unload(bitmap);
 		std::cout << "Unloaded image\n";
@@ -108,10 +130,14 @@ BYTE* Image::bits()
 
 Image::ColorMask Image::colorMask() const
 {
-	return
-	{
+	return {
 		FreeImage_GetRedMask(bitmap),
 		FreeImage_GetGreenMask(bitmap),
 		FreeImage_GetBlueMask(bitmap)
 	};
+}
+
+float Image::getRatio() const
+{
+	return float(width()) / float(height());
 }

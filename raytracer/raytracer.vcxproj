@@ -131,13 +131,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Image.hpp" />
     <ClInclude Include="ImageExept.hpp" />
+    <ClInclude Include="Lamp.hpp" />
     <ClInclude Include="MathExcept.hpp" />
+    <ClInclude Include="MathTools.hpp" />
+    <ClInclude Include="Object.hpp" />
+    <ClInclude Include="Ray.hpp" />
+    <ClInclude Include="Scene.hpp" />
+    <ClInclude Include="Sphere.hpp" />
     <ClInclude Include="Vector3.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
