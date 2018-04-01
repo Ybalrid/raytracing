@@ -7,8 +7,7 @@
 class Object
 {
 public:
-	Object(Vector3d pos) :
-	 position(pos) {}
+	explicit Object(Vector3d pos);
 	Vector3d position;
 	virtual ~Object()					   = default;
 	virtual HitResult hit(const Rayd& ray) = 0;
