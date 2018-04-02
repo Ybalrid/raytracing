@@ -5,10 +5,10 @@
 
 struct Lamp
 {
-	float value;
+	double value;
 	Vector3d position;
 
-	Lamp();
+	Lamp(const Vector3d& pos, double powerFactor);
 };
 
 using LampUptr = std::unique_ptr<Lamp>;

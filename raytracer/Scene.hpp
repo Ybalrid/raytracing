@@ -24,11 +24,19 @@ public:
 	decltype(auto) addObject(Args... args)
 	{
 		auto objPtr = std::make_unique<ObjectType>(args...);
-		sceneContent.push_back(std::move(objPtr));
+		addObject(std::move(objPtr));
 		return objPtr;
 	}
 
 	void addLamp(LampUptr&& lamp);
+
+	template <class LampType, typename... Args>
+	decltype(auto) addLamp(Args... args)
+	{
+		auto lmpPtr = std::make_unique<LampType>(args...);
+		addLamp(std::move(lmpPtr));
+		return lmpPtr;
+	}
 
 	void render();
 
