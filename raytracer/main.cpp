@@ -18,16 +18,16 @@ void hang()
 
 int main()
 {
-	Scene s(1920, 1080, float(RIGHT_ANGLE));
+	Scene s(1024, 768, float(RIGHT_ANGLE));
 	//Sphere are origin, radius
-	Sphere* s0 = s.addObject<Sphere>(Vector3d(0, 1, 4), 1);
+	Sphere* s0 = s.addObject<Sphere>(Vector3d(0, 1, 4), 1.0);
 	Sphere* s1 = s.addObject<Sphere>(Vector3d(2, 0, 4), 0.25);
-	Sphere* s2 = s.addObject<Sphere>(Vector3d(-3, 0, 6), 2);
+	Sphere* s2 = s.addObject<Sphere>(Vector3d(-3, 0, 6), 2.0);
 
 	s0->diffuseColor.x = 1;
 	s0->diffuseColor.y = 0;
 	s0->diffuseColor.z = 0;
-	s0->shinyness	  = 200;
+	s0->shinyness	  = 100;
 
 	s1->diffuseColor.x = 0;
 	s1->diffuseColor.y = 1;

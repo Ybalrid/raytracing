@@ -17,8 +17,8 @@ void Scene::addLamp(LampUptr&& lamp)
 
 void Scene::render()
 {
-	RGBQUAD diffuseCol, specularCol, emissiveCol;
-	RGBQUAD output;
+	RGBQUAD diffuseCol, specularCol, emissiveCol, output;
+	auto blocked = true;
 
 	//Get access to the image
 	auto& backplane = cam.getBackplane();
@@ -43,19 +43,14 @@ void Scene::render()
 				if(Rayd::checkHit(hit))
 				{
 					//get the position of the ray/object intersection
-					auto hitpoint = Rayd::getHitPoint(hit);
+					const auto hitpoint = Rayd::getHitPoint(hit);
 
 					//If this value is lower than the last time we hit something, calculate the pixel.
 					if(hitpoint.length() < lastDist)
-					{
 						lastDist = hitpoint.length();
-					}
-
 					//Value not lower? try another object
 					else
-					{
 						continue;
-					}
 
 					//Set to black the output corlor
 					memset(&output, 0, sizeof output);
@@ -69,21 +64,19 @@ void Scene::render()
 						shadowRay.origin.y = hitpoint.y;
 						shadowRay.origin.z = hitpoint.z;
 
-						auto direction = lamp->position - shadowRay.origin;
-						direction.normalize();
-
+						const auto direction  = (lamp->position - shadowRay.origin).normalizedCopy();
 						shadowRay.direction.x = direction.x;
 						shadowRay.direction.y = direction.y;
 						shadowRay.direction.z = direction.z;
 
 						//Add a small amount of bias
-						auto originWithBias = shadowRay.along(4096 * std::numeric_limits<double>::epsilon());
-						shadowRay.origin.x  = originWithBias.x;
-						shadowRay.origin.y  = originWithBias.y;
-						shadowRay.origin.z  = originWithBias.z;
+						const auto originWithBias = shadowRay.along(4096 * std::numeric_limits<double>::epsilon());
+						shadowRay.origin.x		  = originWithBias.x;
+						shadowRay.origin.y		  = originWithBias.y;
+						shadowRay.origin.z		  = originWithBias.z;
 
 						//Check if no object block that light from us
-						bool blocked = false;
+						blocked = false;
 						for(auto& shadowObj : sceneContent)
 						{
 							if(Rayd::checkHit(shadowObj->hit(shadowRay)))
@@ -97,15 +90,15 @@ void Scene::render()
 						if(!blocked)
 						{
 							//Get the normal and view vectors
-							const auto normal = obj->normalAt(hitpoint);
-							auto viewVector   = -1.0 * ray.direction;
+							const auto normal	 = obj->normalAt(hitpoint);
+							const auto viewVector = -1.0 * ray.direction;
 
 							//Calculate the blinn-phong median vector (L+H / ||L+H||)
-							auto h = (shadowRay.direction + viewVector) *= 1.0 / (shadowRay.direction + viewVector).length();
+							const auto h = (shadowRay.direction + viewVector) *= 1.0 / (shadowRay.direction + viewVector).length();
 
 							//Calculate teh diffuse and specular factor we should use
-							double diffuse  = (normal.dotProduct(shadowRay.direction) * lamp->attenuation(hitpoint) * lamp->value);
-							double specular = (std::pow(normal.dotProduct(h), obj->shinyness) * lamp->attenuation(hitpoint) * lamp->value);
+							const auto diffuse  = (normal.dotProduct(shadowRay.direction) * lamp->attenuation(hitpoint) * lamp->value);
+							const auto specular = (std::pow(normal.dotProduct(h), obj->shinyness) * lamp->attenuation(hitpoint) * lamp->value);
 
 							//Compute the specular, diffuse and emissive colors. The dot product may be negatives, so beware ;-)
 							specularCol.rgbBlue  = std::max(0, int(255 * specular * obj->specularColor.z));

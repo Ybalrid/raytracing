@@ -1,6 +1,6 @@
 #include "Sphere.hpp"
 
-Sphere::Sphere(Vector3d pos, float r) :
+Sphere::Sphere(Vector3d pos, double r) :
  Object(pos),
  radius(r),
  sqRadius(r * r)

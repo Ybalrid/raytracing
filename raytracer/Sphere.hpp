@@ -5,11 +5,11 @@
 
 class Sphere : public Object
 {
-	float radius;
-	float sqRadius;
+	double radius;
+	double sqRadius;
 
 public:
-	Sphere(Vector3d pos, float r);
+	Sphere(Vector3d pos, double r);
 
 	HitResult hit(const Rayd& r) override;
 
