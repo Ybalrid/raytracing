@@ -29,3 +29,8 @@ HitResult Sphere::hit(const Rayd& r)
 
 	return Rayd::goodhit(r, x0);
 }
+
+Vector3d Sphere::normalAt(const Vector3d& point) const
+{
+	return (point - position).normalizedCopy();
+}

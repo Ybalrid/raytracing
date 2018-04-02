@@ -12,4 +12,6 @@ public:
 	Sphere(Vector3d pos, float r);
 
 	HitResult hit(const Rayd& r) override;
+
+	Vector3d normalAt(const Vector3d& point) const override;
 };
