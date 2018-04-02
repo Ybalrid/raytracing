@@ -64,10 +64,11 @@ void Scene::render()
 						shadowRay.direction.y = direction.y;
 						shadowRay.direction.z = direction.z;
 
-						auto hack		   = shadowRay.along(1.0 + 2 * std::numeric_limits<double>::epsilon());
-						shadowRay.origin.x = hack.x;
-						shadowRay.origin.y = hack.y;
-						shadowRay.origin.z = hack.z;
+						//Add a small amount of bias
+						auto originWithBias = shadowRay.along(255 * std::numeric_limits<double>::epsilon());
+						shadowRay.origin.x  = originWithBias.x;
+						shadowRay.origin.y  = originWithBias.y;
+						shadowRay.origin.z  = originWithBias.z;
 
 						bool blocked = false;
 						for(auto& shadowObj : sceneContent)
@@ -81,11 +82,9 @@ void Scene::render()
 
 						if(!blocked)
 						{
-							//TODO calculate true surface normal
-							Vector3d normal = (hitpoint - obj->position).normalizedCopy();
-
-							double dot = std::max(0.0, normal.dotProduct(shadowRay.direction) * lamp->value);
-							//std::cout << "dot prouct value : " << value << '\n';
+							const auto normal = obj->normalAt(hitpoint);
+							double actualDot  = normal.dotProduct(shadowRay.direction) * lamp->value;
+							double dot		  = std::max(0.0, actualDot);
 							value += dot;
 						}
 						else
