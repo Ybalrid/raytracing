@@ -13,10 +13,10 @@ HitResult Sphere::hit(const Rayd& r)
 	double x0, x1;
 
 	//Using the analitycal solution for the ray/sphere interect problem
-	Vector3d L = r.origin - position;
-	double a   = r.direction.dotProduct(r.direction);
-	double b   = 2 * r.direction.dotProduct(L);
-	double c   = L.dotProduct(L) - sqRadius;
+	const auto L = r.origin - position;
+	const auto a = r.direction.dotProduct(r.direction);
+	const auto b = 2 * r.direction.dotProduct(L);
+	const auto c = L.dotProduct(L) - sqRadius;
 
 	if(!MathTools::solveQuadratic(a, b, c, x0, x1)) return Rayd::nullHit();
 
