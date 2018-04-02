@@ -24,8 +24,9 @@ public:
 	decltype(auto) addObject(Args... args)
 	{
 		auto objPtr = std::make_unique<ObjectType>(args...);
+		auto raw	= objPtr.get();
 		addObject(std::move(objPtr));
-		return objPtr;
+		return raw;
 	}
 
 	void addLamp(LampUptr&& lamp);
@@ -34,8 +35,9 @@ public:
 	decltype(auto) addLamp(Args... args)
 	{
 		auto lmpPtr = std::make_unique<LampType>(args...);
+		auto raw	= lmpPtr.get();
 		addLamp(std::move(lmpPtr));
-		return lmpPtr;
+		return raw;
 	}
 
 	void render();

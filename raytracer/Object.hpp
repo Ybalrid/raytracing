@@ -7,6 +7,10 @@
 class Object
 {
 public:
+	Vector3d diffuseColor;
+	Vector3d specularColor;
+	Vector3d emissiveColor;
+	double shinyness;
 	explicit Object(Vector3d pos);
 	Vector3d position;
 	virtual ~Object()									   = default;

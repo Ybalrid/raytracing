@@ -17,11 +17,8 @@ void Scene::addLamp(LampUptr&& lamp)
 
 void Scene::render()
 {
-	RGBQUAD good, bad, actual;
-	good.rgbBlue  = 255;
-	good.rgbGreen = 255;
-	good.rgbRed   = 255;
-	memset(&bad, 128, sizeof bad);
+	RGBQUAD diffuseCol, specularCol, emissiveCol;
+	RGBQUAD output;
 
 	auto& backplane = cam.getBackplane();
 	for(size_t y(0); y < backplane.height(); ++y)
@@ -49,7 +46,7 @@ void Scene::render()
 					{
 						continue;
 					}
-
+					memset(&output, 0, sizeof output);
 					for(auto& lamp : sceneLighting)
 					{
 						Rayd shadowRay;
@@ -65,7 +62,7 @@ void Scene::render()
 						shadowRay.direction.z = direction.z;
 
 						//Add a small amount of bias
-						auto originWithBias = shadowRay.along(255 * std::numeric_limits<double>::epsilon());
+						auto originWithBias = shadowRay.along(4096 * std::numeric_limits<double>::epsilon());
 						shadowRay.origin.x  = originWithBias.x;
 						shadowRay.origin.y  = originWithBias.y;
 						shadowRay.origin.z  = originWithBias.z;
@@ -82,17 +79,35 @@ void Scene::render()
 
 						if(!blocked)
 						{
-							const auto normal = obj->normalAt(hitpoint);
-							double actualDot  = normal.dotProduct(shadowRay.direction) * lamp->value;
-							double dot		  = std::max(0.0, actualDot);
-							value += dot;
-						}
-						else
-						{
+							const auto normal	 = obj->normalAt(hitpoint);
+							auto reflectionVector = shadowRay.direction.reflected(normal);
+							auto viewVector		  = -1.0 * ray.direction;
+
+							auto h = (shadowRay.direction + viewVector) *= 1.0 / (shadowRay.direction + viewVector).length();
+
+							//TODO add atenuation
+							double diffuse  = (normal.dotProduct(shadowRay.direction) * lamp->attenuation(hitpoint) * lamp->value);
+							double specular = (std::pow(normal.dotProduct(h), obj->shinyness) * lamp->attenuation(hitpoint) * lamp->value);
+
+							specularCol.rgbBlue  = std::max(0, int(255 * specular * obj->specularColor.z));
+							specularCol.rgbGreen = std::max(0, int(255 * specular * obj->specularColor.y));
+							specularCol.rgbRed   = std::max(0, int(255 * specular * obj->specularColor.x));
+
+							diffuseCol.rgbBlue  = std::max(0, int(255 * diffuse * obj->diffuseColor.z));
+							diffuseCol.rgbGreen = std::max(0, int(255 * diffuse * obj->diffuseColor.y));
+							diffuseCol.rgbRed   = std::max(0, int(255 * diffuse * obj->diffuseColor.x));
+
+							emissiveCol.rgbBlue  = 255 * obj->emissiveColor.z;
+							emissiveCol.rgbGreen = 255 * obj->emissiveColor.y;
+							emissiveCol.rgbRed   = 255 * obj->emissiveColor.x;
+
+							output.rgbBlue  = std::min(255, output.rgbBlue + specularCol.rgbBlue + diffuseCol.rgbBlue + emissiveCol.rgbBlue);
+							output.rgbGreen = std::min(255, output.rgbGreen + specularCol.rgbGreen + diffuseCol.rgbGreen + emissiveCol.rgbGreen);
+							output.rgbRed   = std::min(255, output.rgbRed + specularCol.rgbRed + diffuseCol.rgbRed + emissiveCol.rgbRed);
 						}
 					}
-					memset(&actual, int(255 * std::min(1.0, value)), sizeof(actual));
-					backplane.setPixelColor(x, y, actual);
+
+					backplane.setPixelColor(x, y, output);
 				}
 			}
 		}
