@@ -71,5 +71,8 @@
     <ClInclude Include="MathTools.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Plane.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

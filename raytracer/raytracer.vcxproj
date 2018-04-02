@@ -147,6 +147,7 @@
     <ClInclude Include="MathExcept.hpp" />
     <ClInclude Include="MathTools.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="Plane.hpp" />
     <ClInclude Include="Ray.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Sphere.hpp" />
